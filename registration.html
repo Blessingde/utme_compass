@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UTME Compass - Guided Registration</title>
+    <style>
+      /* General body and container styling */
+      :root {
+        --primary-color: #0d47a1;
+        --secondary-color: #ffb300;
+        --light-bg: #f5f5f5;
+        --font-color: #333;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--light-bg);
+        color: var(--font-color);
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+        color: #666;
+      }
+
+      /* Progress Bar */
+      .progress-bar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .progress-bar-container::before {
+        content: "";
+        position: absolute;
+        height: 4px;
+        width: 100%;
+        background-color: #e0e0e0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+      }
+
+      .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+      }
+
+      .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      .step-item.active .step-circle {
+        background-color: var(--primary-color);
+        transform: scale(1.1);
+      }
+
+      .step-label {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #888;
+        text-align: center;
+        transition: color 0.3s;
+      }
+
+      .step-item.active .step-label {
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+
+      /* Form Sections and elements */
+      .form-section {
+        display: none;
+      }
+
+      .form-section.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--font-color);
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="tel"]:focus,
+      select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 5px rgba(0, 77, 153, 0.2);
+        outline: none;
+      }
+
+      /* Alerts */
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .alert-warning {
+        background-color: #fff3cd;
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
+      }
+
+      .alert-danger {
+        background-color: #f8d7da;
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+      }
+
+      .subject-adviser {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #e6f3ff;
+        border: 1px dashed var(--primary-color);
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+
+      .subject-adviser span {
+        font-weight: bold;
+      }
+
+      .subject-adviser.invalid {
+        background-color: #ffebe6;
+        border-color: var(--danger-color);
+        color: var(--danger-color);
+      }
+
+      /* Navigation Buttons */
+      .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .form-buttons button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      #prevBtn {
+        background-color: #ccc;
+        color: var(--font-color);
+      }
+
+      #prevBtn:hover {
+        background-color: #bbb;
+      }
+
+      #nextBtn,
+      #submitBtn {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      #nextBtn:hover,
+      #submitBtn:hover {
+        background-color: #003366;
+        transform: translateY(-2px);
+      }
+
+      /* Review Section */
+      #review-summary p {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      #review-summary strong {
+        display: inline-block;
+        min-width: 150px;
+        color: var(--primary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>UTME Compass</h1>
+        <p class="subtitle">Your Guided Path to Registration</p>
+      </header>
+
+      <div class="progress-bar-container">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Profile</span>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">O'Level</span>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Choices</span>
+        </div>
+        <div class="step-item" data-step="4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+
+      <form id="registrationForm">
+        <div class="form-section active" data-step="1">
+          <h2>Step 1: Verify Your JAMB Profile</h2>
+          <p class="subtitle">
+            We will use your Profile Number to retrieve your pre-registered JAMB
+            profile.
+          </p>
+          <div
+            class="alert alert-warning"
+            id="profileStatus"
+            style="display: none"
+          >
+            Retrieving your profile...
+          </div>
+          <div class="form-group">
+            <label for="profileNumber">JAMB Profile Number</label>
+            <input
+              type="tel"
+              id="profileNumber"
+              name="profileNumber"
+              placeholder="e.g., JMBP-12345"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="fullName">Full Name (from JAMB server)</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder=""
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="form-section" data-step="2">
+          <h2>Step 2: Verify O'Level Results</h2>
+          <p class="subtitle">
+            We will compare your WAEC details with your JAMB profile to check
+            for mismatches.
+          </p>
+          <div class="form-group">
+            <label for="waecExamNumber">WAEC Exam Number</label>
+            <input
+              type="tel"
+              id="waecExamNumber"
+              name="waecExamNumber"
+              placeholder="e.g., 4012345678"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="waecExamYear">WAEC Exam Year</label>
+            <input
+              type="tel"
+              id="waecExamYear"
+              name="waecExamYear"
+              placeholder="e.g., 2023"
+              required
+            />
+          </div>
+          <div
+            class="alert alert-warning"
+            id="waecStatus"
+            style="display: none"
+          >
+            Verifying WAEC details...
+          </div>
+
+          <div id="verificationResults" style="display: none">
+            <h3>Verification Summary</h3>
+            <div class="alert" id="comparisonAlert"></div>
+            <div class="form-group" id="profileDetails">
+              <p>
+                <strong>Name on JAMB Profile:</strong>
+                <span id="jambNameDisplay"></span>
+              </p>
+            </div>
+            <div class="form-group" id="waecDetails">
+              <p>
+                <strong>Name on WAEC Result:</strong>
+                <span id="waecNameDisplay"></span>
+              </p>
+              <p><strong>WAEC Results:</strong></p>
+              <ul id="waecResultsList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="3">
+          <h2>Step 3: Your Academic Choices</h2>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@gmail.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              name="phoneNumber"
+              placeholder="e.g., 08012345678"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="institution">1st Choice Institution</label>
+            <select id="institution" name="institution" required>
+              <option value="" disabled selected>Select an Institution</option>
+              <option value="UNILAG">University of Lagos</option>
+              <option value="UI">University of Ibadan</option>
+              <option value="OAU">Obafemi Awolowo University</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="course">1st Choice Course</label>
+            <select id="course" name="course" required>
+              <option value="" disabled selected>Select a Course</option>
+              <option value="Medicine">Medicine and Surgery</option>
+              <option value="Law">Law</option>
+              <option value="Accounting">Accounting</option>
+              <option value="Computer Science">Computer Science</option>
+            </select>
+          </div>
+
+          <div class="subject-adviser">
+            <p>Required JAMB Subjects for your selected course:</p>
+            <p id="requiredSubjectsText">
+              Please select a course to see the required subjects.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label>Your JAMB Subject Combination</label>
+            <div id="jambSubjects">
+              <p>
+                Subjects will be automatically filled based on your course
+                selection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="4">
+          <h2>Step 4: Review & Submit</h2>
+          <p class="subtitle">
+            Please confirm all your details are correct before submitting.
+          </p>
+          <div id="review-summary"></div>
+          <div
+            class="alert alert-success"
+            id="successAlert"
+            style="display: none"
+          >
+            ✅ **Success!** Your pre-registration is complete. We will send you
+            an email and SMS with your registration appointment details once it
+            has been scheduled.
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="button" id="prevBtn" style="display: none">
+            Previous
+          </button>
+          <button type="button" id="nextBtn" disabled>Next Step</button>
+          <button type="submit" id="submitBtn" style="display: none">
+            Submit Registration
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("registrationForm");
+      const sections = document.querySelectorAll(".form-section");
+      const progressItems = document.querySelectorAll(".step-item");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const submitBtn = document.getElementById("submitBtn");
+
+      let currentStep = 0;
+      let profileVerified = false;
+      let waecVerified = false;
+      let detailsValidated = false;
+
+      // --- MOCK DATABASES ---
+      // This simulates the JAMB server database, now keyed by a mock profile number.
+      const mockJAMBDatabase = {
+        "JMBP-12345": { fullName: "Adebayo Olawale Segun" },
+        "JMBP-67890": { fullName: "Aisha Chiamaka Bello" },
+        "JMBP-00000": { fullName: "John Doe" }, // For mismatch demonstration
+      };
+
+      const mockWaecDatabase = {
+        4012345678: {
+          name: "Afolabiye Olawale Segun", // Will cause a mismatch
+          subjects: [
+            { subject: "Mathematics", grade: "B2" },
+            { subject: "English Language", grade: "C4" },
+            { subject: "Biology", grade: "A1" },
+          ],
+        },
+        4019876543: {
+          name: "Adebayo Olawale Segun", // Will match
+          subjects: [
+            { subject: "Mathematics", grade: "B3" },
+            { subject: "English Language", grade: "B2" },
+            { subject: "Chemistry", grade: "A1" },
+          ],
+        },
+        4020000000: {
+          // For a matching JAMB but different WAEC name (to show mismatch logic)
+          name: "John Does",
+          subjects: [],
+        },
+      };
+
+      const subjectCombinations = {
+        Medicine: ["English Language", "Biology", "Chemistry", "Physics"],
+        Law: [
+          "English Language",
+          "Literature in English",
+          "Government",
+          "Christian Religious Studies",
+        ],
+        Accounting: [
+          "English Language",
+          "Mathematics",
+          "Economics",
+          "Financial Accounting",
+        ],
+        "Computer Science": [
+          "English Language",
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+        ],
+      };
+
+      // --- NAVIGATION LOGIC ---
+      function updateNavigation() {
+        prevBtn.style.display = currentStep === 0 ? "none" : "block";
+        nextBtn.style.display =
+          currentStep === sections.length - 1 ? "none" : "block";
+        submitBtn.style.display =
+          currentStep === sections.length - 1 ? "block" : "none";
+
+        if (currentStep === 0) {
+          nextBtn.disabled = !profileVerified;
+        } else if (currentStep === 1) {
+          nextBtn.disabled = !waecVerified;
+        } else if (currentStep === 2) {
+          nextBtn.disabled = !detailsValidated;
+        } else {
+          nextBtn.disabled = false;
+        }
+      }
+
+      function showStep(stepIndex) {
+        sections.forEach((section, index) => {
+          section.classList.toggle("active", index === stepIndex);
+        });
+        progressItems.forEach((item, index) => {
+          item.classList.toggle("active", index === stepIndex);
+        });
+        updateNavigation();
+      }
+
+      // --- STEP 1: JAMB Profile Retrieval ---
+      const profileNumberInput = document.getElementById("profileNumber");
+      const fullNameInput = document.getElementById("fullName");
+
+      profileNumberInput.addEventListener("blur", () => {
+        const profileNumber = profileNumberInput.value;
+        const profileStatus = document.getElementById("profileStatus");
+
+        fullNameInput.value = "";
+
+        if (profileNumber.length < 5) {
+          return;
+        }
+
+        profileStatus.style.display = "block";
+
+        setTimeout(() => {
+          if (mockJAMBDatabase[profileNumber]) {
+            fullNameInput.value = mockJAMBDatabase[profileNumber].fullName;
+            profileVerified = true;
+          } else {
+            alert(
+              "Profile not found on JAMB server. Please check your profile number."
+            );
+            profileVerified = false;
+          }
+          profileStatus.style.display = "none";
+          updateNavigation();
+        }, 1500);
+      });
+
+      // --- STEP 2: WAEC Verification and Comparison ---
+      const waecFormInputs = document.querySelectorAll(
+        "#waecExamNumber, #waecExamYear"
+      );
+      waecFormInputs.forEach((input) => {
+        input.addEventListener("blur", () => {
+          const waecNumber = document.getElementById("waecExamNumber").value;
+          const waecYear = document.getElementById("waecExamYear").value;
+          const waecStatus = document.getElementById("waecStatus");
+          const verificationResults = document.getElementById(
+            "verificationResults"
+          );
+          const comparisonAlert = document.getElementById("comparisonAlert");
+
+          if (waecNumber && waecYear) {
+            waecStatus.style.display = "block";
+            setTimeout(() => {
+              const waecRecord = mockWaecDatabase[waecNumber];
+              const jambFullName = document.getElementById("fullName").value;
+
+              verificationResults.style.display = "block";
+              document.getElementById("jambNameDisplay").textContent =
+                jambFullName;
+
+              if (waecRecord) {
+                document.getElementById("waecNameDisplay").textContent =
+                  waecRecord.name;
+                const resultsList = document.getElementById("waecResultsList");
+                resultsList.innerHTML = "";
+                waecRecord.subjects.forEach((subj) => {
+                  resultsList.innerHTML += `<li>${subj.subject}: ${subj.grade}</li>`;
+                });
+
+                if (
+                  waecRecord.name.toLowerCase() === jambFullName.toLowerCase()
+                ) {
+                  comparisonAlert.className = "alert alert-success";
+                  comparisonAlert.innerHTML =
+                    "✅ **Success!** Your names match. You can proceed!";
+                  waecVerified = true;
+                } else {
+                  comparisonAlert.className = "alert alert-danger";
+                  comparisonAlert.innerHTML =
+                    "🚨 **Mismatch Alert!** The names do not match. This must be corrected with NIMC before you can submit.";
+                  waecVerified = false;
+                }
+              } else {
+                comparisonAlert.className = "alert alert-danger";
+                comparisonAlert.innerHTML =
+                  "⚠️ **WAEC Record Not Found.** Please check your details.";
+                waecVerified = false;
+              }
+              waecStatus.style.display = "none";
+              updateNavigation();
+            }, 1500);
+          }
+        });
+      });
+
+      // --- STEP 3: Details and Choices Validation ---
+      const academicInputs = document.querySelectorAll(
+        "#email, #phoneNumber, #institution, #course"
+      );
+      academicInputs.forEach((input) => {
+        input.addEventListener("blur", () => {
+          let allFilled = true;
+          academicInputs.forEach((el) => {
+            if (!el.value) allFilled = false;
+          });
+          detailsValidated = allFilled;
+          updateNavigation();
+        });
+      });
+
+      // --- DYNAMIC SUBJECT LOGIC ---
+      const courseSelect = document.getElementById("course");
+      courseSelect.addEventListener("change", (e) => {
+        const selectedCourse = e.target.value;
+        const required = subjectCombinations[selectedCourse];
+        const requiredSubjectsText = document.getElementById(
+          "requiredSubjectsText"
+        );
+        const jambSubjectsDiv = document.getElementById("jambSubjects");
+
+        if (required) {
+          requiredSubjectsText.innerHTML = `<span>Required:</span> ${required.join(
+            ", "
+          )}`;
+          jambSubjectsDiv.innerHTML = required
+            .map((subj) => `<p>${subj}</p>`)
+            .join("");
+        }
+      });
+
+      // --- DYNAMIC REVIEW SUMMARY ---
+      function generateReviewSummary() {
+        const reviewSummary = document.getElementById("review-summary");
+        const jambFullName = document.getElementById("fullName").value;
+        const profileNumber = document.getElementById("profileNumber").value;
+        const waecExamNumber = document.getElementById("waecExamNumber").value;
+        const waecRecord = mockWaecDatabase[waecExamNumber];
+        const waecResultsHtml = waecRecord
+          ? waecRecord.subjects
+              .map((s) => `<li><strong>${s.subject}:</strong> ${s.grade}</li>`)
+              .join("")
+          : "No results found.";
+
+        reviewSummary.innerHTML = `
+            <h3>Personal Information</h3>
+            <p><strong>Full Name (from JAMB):</strong> ${jambFullName}</p>
+            <p><strong>Profile Number:</strong> ${profileNumber}</p>
+            <p><strong>Email:</strong> ${
+              document.getElementById("email").value
+            }</p>
+            <p><strong>Phone:</strong> ${
+              document.getElementById("phoneNumber").value
+            }</p>
+            
+            <h3>Academic Information</h3>
+            <p><strong>WAEC Name:</strong> ${
+              waecRecord ? waecRecord.name : "Not found"
+            }</p>
+            <p><strong>WAEC Exam Number:</strong> ${waecExamNumber}</p>
+            <p><strong>WAEC Results:</strong></p>
+            <ul style="list-style-type: none;">${waecResultsHtml}</ul>
+
+            <h3>Academic Choices</h3>
+            <p><strong>1st Choice Institution:</strong> ${
+              document.getElementById("institution").value
+            }</p>
+            <p><strong>1st Choice Course:</strong> ${
+              document.getElementById("course").value
+            }</p>
+            <p><strong>JAMB Subjects:</strong> ${subjectCombinations[
+              document.getElementById("course").value
+            ].join(", ")}</p>
+        `;
+      }
+
+      // --- MAIN FLOW CONTROL ---
+      nextBtn.addEventListener("click", () => {
+        if (currentStep === 0 && !profileVerified) {
+          alert("Please enter and verify your JAMB profile number first.");
+          return;
+        }
+        if (currentStep === 1 && !waecVerified) {
+          alert(
+            "Please enter your WAEC details and correct any mismatches before proceeding."
+          );
+          return;
+        }
+        if (currentStep === 2 && !detailsValidated) {
+          alert("Please fill in all your details before proceeding.");
+          return;
+        }
+
+        currentStep++;
+        if (currentStep === 3) {
+          generateReviewSummary();
+        }
+        showStep(currentStep);
+      });
+
+      prevBtn.addEventListener("click", () => {
+        currentStep--;
+        showStep(currentStep);
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        // Redirect to the dashboard after successful submission
+        window.location.href = "dashboard.html";
+      });
+
+      showStep(currentStep);
+    </script>
+  </body>
+</html>
