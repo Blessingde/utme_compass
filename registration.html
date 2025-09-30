@@ -472,7 +472,7 @@
       };
 
       const mockWaecDatabase = {
-        4012345678: {
+        4019876543: {
           name: "Afolabiye Olawale Segun", // Will cause a mismatch
           subjects: [
             { subject: "Mathematics", grade: "B2" },
@@ -480,7 +480,7 @@
             { subject: "Biology", grade: "A1" },
           ],
         },
-        4019876543: {
+        4012345678: {
           name: "Adebayo Olawale Segun", // Will match
           subjects: [
             { subject: "Mathematics", grade: "B3" },
@@ -615,12 +615,12 @@
                 ) {
                   comparisonAlert.className = "alert alert-success";
                   comparisonAlert.innerHTML =
-                    "Success!. Your names match. You can proceed!";
+                    "Success! Your names match. You can proceed!";
                   waecVerified = true;
                 } else {
                   comparisonAlert.className = "alert alert-danger";
                   comparisonAlert.innerHTML =
-                    "Mismatch Alert!. The names do not match. This must be corrected with NIMC before you can submit.";
+                    "Mismatch Alert! The names do not match. This must be corrected with NIMC before you can submit.";
                   waecVerified = false;
                 }
               } else {
