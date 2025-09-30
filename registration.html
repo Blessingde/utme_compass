@@ -432,9 +432,9 @@
             id="successAlert"
             style="display: none"
           >
-            ✅ **Success!** Your pre-registration is complete. We will send you
-            an email and SMS with your registration appointment details once it
-            has been scheduled.
+            Success!. Your pre-registration is complete. We will send you an
+            email and SMS with your registration appointment details once it has
+            been scheduled.
           </div>
         </div>
 
@@ -615,18 +615,18 @@
                 ) {
                   comparisonAlert.className = "alert alert-success";
                   comparisonAlert.innerHTML =
-                    "✅ **Success!** Your names match. You can proceed!";
+                    "Success!. Your names match. You can proceed!";
                   waecVerified = true;
                 } else {
                   comparisonAlert.className = "alert alert-danger";
                   comparisonAlert.innerHTML =
-                    "🚨 **Mismatch Alert!** The names do not match. This must be corrected with NIMC before you can submit.";
+                    "Mismatch Alert!. The names do not match. This must be corrected with NIMC before you can submit.";
                   waecVerified = false;
                 }
               } else {
                 comparisonAlert.className = "alert alert-danger";
                 comparisonAlert.innerHTML =
-                  "⚠️ **WAEC Record Not Found.** Please check your details.";
+                  "WAEC Record Not Found. Please check your details.";
                 waecVerified = false;
               }
               waecStatus.style.display = "none";
